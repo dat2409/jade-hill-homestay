@@ -1,0 +1,7 @@
+node_modules
+
+#sensitive info
+src/config/db/index.js
+package.json
+package-lock.json
+.git/index.lock
