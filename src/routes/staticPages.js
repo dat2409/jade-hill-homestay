@@ -9,14 +9,10 @@ const router = express.Router();
  *     User:
  *       type: object
  *       required:
- *         - id
  *         - email
  *         - first_name
  *         - last_name
  *       properties:
- *         id:
- *           type: string
- *           description: The auto-generated id of the book
  *         email:
  *           type: string
  *           description: User email
@@ -33,7 +29,6 @@ const router = express.Router();
  *           type: string
  *           description: User role
  *       example:
- *         id: d5fE_asz
  *         email: a@gmail.com
  *         first_name: Nguyen
  *         last_name: An
