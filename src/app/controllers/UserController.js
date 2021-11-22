@@ -31,7 +31,8 @@ class UserController {
     const user = new User({
       email: req.body.email,
       password: hashPassword,
-      role: req.body.role
+      role: req.body.role,
+      created_by: `${req.user.last_name} ${req.user.first_name}`
     })
 
     try {
