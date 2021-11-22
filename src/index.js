@@ -11,6 +11,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cookieParser = require('cookie-parser');
 require('dotenv').config({ path: 'src/.env' });
+
 // Connect to db
 db.connect();
 
@@ -35,6 +36,8 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use(methodOverride('_method'));
+app.use(CookieParser());
+
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -50,7 +53,7 @@ const options = {
       },
     ],
   },
-  apis: [`${__dirname}/routes/staticPages.js`],
+  apis: [`${__dirname}/routes/*.js`],
 };
 const specs = swaggerJsdoc(options);
 app.use(

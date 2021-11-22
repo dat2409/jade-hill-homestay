@@ -6,6 +6,7 @@ class StaticPagesController {
   home(req, res, next) {
     res.render('home');
   }
+
   handleLogin(req, res, next) {
     User.findOne({ email: req.body.email }).then((u) => {
       if (u) {

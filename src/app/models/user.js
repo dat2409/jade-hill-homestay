@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema(
     first_name: {
       type: String,
       trim: true,
+      default: "test"
     },
     last_name: {
       type: String,
@@ -18,16 +19,16 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       trim: true,
-      maxlength: 40,
+      max: 40,
     },
     password: {
       trim: true,
-      minlength: 3,
+      min: 3,
       type: String,
     },
     role: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Role',
+      type: String,
+      enum: ["Staff", "Manager"]
     },
     created_by: {
       type: mongoose.Schema.Types.ObjectId,
