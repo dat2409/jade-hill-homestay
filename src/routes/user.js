@@ -18,11 +18,8 @@ router.get('/edit/:id', userController.edit);
  *         description: successfully
  *       401:
  */
-router.get('/', userAuth.requireAuth, userController.index);
+router.get('/', userController.index);
 router.patch('/:id', userController.update);
 router.delete('/:id', userController.destroy);
 
-//input cua api la ch3i, khong, input cuar api bi loi ko co get thoi
-// test@gmail.com
-// 123456
 module.exports = router;
