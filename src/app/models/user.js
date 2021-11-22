@@ -25,9 +25,9 @@ const userSchema = new mongoose.Schema(
       minlength: 3,
       type: String,
     },
-    role: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Role',
+    isManager: {
+      type: Boolean,
+      default: false
     },
     created_by: {
       type: mongoose.Schema.Types.ObjectId,

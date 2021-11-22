@@ -48,7 +48,7 @@ const options = {
       },
     ],
   },
-  apis: [`${__dirname}/routes/staticPages.js`],
+  apis: [`${__dirname}/routes/*.js`],
 };
 const specs = swaggerJsdoc(options);
 app.use(
