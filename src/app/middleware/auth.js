@@ -9,6 +9,10 @@ module.exports.requireAuth = function (req, res, next) {
   jwt.verify(req.cookies.token, process.env.JWTSECRET, function (err, decoded) {
     if (decoded == undefined) {
       res.status(401).send('Unauthorized');
+    } else {
+      User.findOne({ _id: decoded.user_id }, { explicit: true }).then((u) => {
+        req.user = u;
+      });
     }
   });
   next();
