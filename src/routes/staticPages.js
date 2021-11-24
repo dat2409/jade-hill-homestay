@@ -1,5 +1,6 @@
 const express = require('express');
 const staticPagesController = require('../app/controllers/StaticPagesController');
+const auth = require('../app/middleware/auth');
 
 const router = express.Router();
 /**
@@ -64,6 +65,7 @@ const router = express.Router();
  *         description: Account not found
  */
 router.post('/login', staticPagesController.handleLogin);
+
 router.get('/', staticPagesController.home);
 
 module.exports = router;
