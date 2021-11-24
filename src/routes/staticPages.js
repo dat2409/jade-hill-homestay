@@ -66,17 +66,6 @@ const router = express.Router();
  */
 router.post('/login', staticPagesController.handleLogin);
 
-/**
- * @swagger
- * /test:
- *   get:
- *     description: test
- *     responses:
- *       200:
- *         description: successfully
- *       401:
- */
-router.get('/test', auth.requireAuth, staticPagesController.test);
 router.get('/', staticPagesController.home);
 
 module.exports = router;
