@@ -19,12 +19,14 @@ const Schema = new mongoose.Schema({
     description: {
         type: String,
         required: true
-    }
+    },
+    phone: {
+        type: String,
+        required: true,
+    },
 },{
     timestamps: true
 });
-
-
 
 const Homestay = mongoose.model('Homestay', Schema);
 
