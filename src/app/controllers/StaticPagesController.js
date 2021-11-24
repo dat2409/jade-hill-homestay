@@ -31,6 +31,10 @@ class StaticPagesController {
       } else res.status(404).send('account not found');
     });
   }
+  test(req, res, next) {
+    console.log('222222222222', req.user);
+    res.send('123');
+  }
 }
 
 module.exports = new StaticPagesController();

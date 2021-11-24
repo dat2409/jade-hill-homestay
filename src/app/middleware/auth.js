@@ -1,7 +1,7 @@
 var User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
-module.exports.requireAuth = function (req, res, next) {
+module.exports.requireAuth = async function (req, res, next) {
   const token = req.cookies.token;
   if (!token) {
     res.status(401).send('Unauthorized');
@@ -10,10 +10,10 @@ module.exports.requireAuth = function (req, res, next) {
     if (decoded == undefined) {
       res.status(401).send('Unauthorized');
     } else {
-      User.findOne({ _id: decoded.user_id }, { explicit: true }).then((u) => {
+      User.findOne({ _id: decoded.user_id }).then((u) => {
         req.user = u;
+        next();
       });
     }
   });
-  next();
 };

@@ -9,6 +9,7 @@ const route = require('./routes');
 const db = require('./config/db');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const cookieParser = require('cookie-parser');
 require('dotenv').config({ path: 'src/.env' });
 // Connect to db
 db.connect();
@@ -31,6 +32,7 @@ app.use(
     extended: true,
   })
 );
+app.use(cookieParser());
 app.use(express.json());
 app.use(methodOverride('_method'));
 const options = {
