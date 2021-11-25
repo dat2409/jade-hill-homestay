@@ -39,6 +39,8 @@ app.use(methodOverride('_method'));
 app.use(CookieParser());
 app.use(cors())
 
+app.options('/login', cors())
+
 const options = {
   definition: {
     openapi: '3.0.0',
