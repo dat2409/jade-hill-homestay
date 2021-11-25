@@ -10,7 +10,8 @@ const createUserValidator = (data) => {
     ).required(),
     role: Joi.string(),
     created_by: Joi.string(),
-    phone_num: Joi.string()
+    phone_num: Joi.string(),
+    created_by: Joi.string()
   })
 
   return rule.validate(data);
