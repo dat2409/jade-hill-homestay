@@ -29,8 +29,6 @@ class UserController {
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
     const user = new User({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
       email: req.body.email,
       password: hashPassword,
       role: req.body.role
@@ -42,8 +40,6 @@ class UserController {
     } catch (err) {
       res.status(400).send(err);
     }
-
-    console.log(req.body);
   }
 
   //GET /users/:id
@@ -55,7 +51,6 @@ class UserController {
 
   //GET /users/
   index(req, res, next) {
-    console.log(req.user)
     User.find({})
       .then(users => res.json(mongoose.multipleMongooseToObject(users)))
       .catch(next)
@@ -70,7 +65,12 @@ class UserController {
 
   //PATCH /users/:id
   update(req, res, next) {
+    const { error } = createUserValidator(req.body);
+
+    if (error) return res.status(422).send(error.details[0].message);
+
     User.updateOne({ _id: req.params.id }, req.body)
+      .then(() => res.send('Update successfully!'))
   }
 
   //DELETE /users/:id
