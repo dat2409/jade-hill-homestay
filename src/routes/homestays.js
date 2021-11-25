@@ -6,6 +6,8 @@ const homestayController = require('../app/controllers/HomestayController');
 
 const router = express.Router();
 
+router.get('/create', homestayController.getCreate);
+
 router.post('/create', homestayController.postCreate);
 
 router.get('/:homestayId', homestayController.getItem);

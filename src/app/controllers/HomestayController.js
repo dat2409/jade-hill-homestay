@@ -1,12 +1,18 @@
 const Homestay = require('../models/homestay');
+const City = require('../models/city');
 
-exports.getAll = (req, res, next) => {
-    Homestay.find()
-        .then(homestays => {
-            console.log(homestays);
-            res.json(homestays)
-        })
-        .catch(err => console.log(err));
+exports.getAll = async (req, res, next) => {
+    try{
+        const homestays = await Homestay.find()
+        for (var i = 0; i < homestays.length; i++){
+            await homestays[i].populate({
+                path:'city'
+            }).execPopulate()
+        }
+        res.send(homestays)
+    } catch (e) {
+        res.send(e)
+    }
 };
 
 exports.getItem = (req, res, next) => {
@@ -14,11 +20,25 @@ exports.getItem = (req, res, next) => {
     Homestay.findById(homestayId)
         .then(homestay => {
             if (homestay) {
-                res.json(homestay);
+                homestay.populate({
+                    path:'city'
+                }).execPopulate().then (homestay => {
+                    res.json(homestay);
+                })
+                
             }
         })
         .catch(err => console.log(err));
   };
+
+exports.getCreate = async (req, res, next) => {
+    try{
+        const cities = await City.find()
+        res.send(cities)
+    } catch (e) {
+        res.send(e)
+    }
+};
 
 exports.postCreate = (req, res, next) => {
     // const name = req.body.name;
