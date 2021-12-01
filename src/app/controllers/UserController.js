@@ -32,13 +32,17 @@ class UserController {
       email: req.body.email,
       password: hashPassword,
       role: req.body.role,
-      created_by: `${req.user.last_name} ${req.user.first_name}`
+      created_by: `${req.user.last_name} ${req.user.first_name}`,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      phone_num: req.body.phone_num
     })
 
     try {
       const newUser = await user.save();
-      await response.send(newUser);
+      await res.send(newUser);
     } catch (err) {
+      console.log("err: ", err)
       res.status(400).send(err);
     }
   }
@@ -77,6 +81,7 @@ class UserController {
   //DELETE /users/:id
   async destroy(req, res, next) {
     await User.deleteOne({ _id: req.params.id })
+      .then(() => res.send('Delete successfully!'))
   }
 }
 
