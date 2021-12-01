@@ -33,24 +33,24 @@ exports.getCreate = async (req, res, next) => {
 };
 
 exports.postCreate = async (req, res, next) => {
-    console.log(req.body.city)
-    const city = await City.findOne({name: req.body.city})
-    const homestay = new Homestay({
-        name: req.body.name,
-        images: req.body.images,
-        address: req.body.address,
-        phone: req.body.phone,
-        description: req.body.description
-    })
-    homestay.city = city._id
-    homestay.save()
-        .then(result => {
-            res.json(result) ;
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    // res.send("ok")
+  console.log(req.body.city)
+  const city = await City.findOne({name: req.body.city})
+  const homestay = new Homestay({
+      name: req.body.name,
+      images: req.body.images,
+      address: req.body.address,
+      phone: req.body.phone,
+      description: req.body.description
+  })
+  homestay.city = city._id
+  homestay.save()
+      .then(result => {
+          res.json(result) ;
+      })
+      .catch(err => {
+          console.log(err);
+      });
+  // res.send("ok")
 };
 
 exports.postUpdate = (req, res, next) => {
