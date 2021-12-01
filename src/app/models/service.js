@@ -20,3 +20,7 @@ const Schema = new mongoose.Schema({
 },{
     timestamps: true
 });
+
+const Service = mongoose.model('Service', Schema);
+
+module.exports = Service;

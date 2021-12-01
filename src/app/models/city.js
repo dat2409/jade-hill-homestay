@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Homestay = require('./homestay')
 
 const Schema = new mongoose.Schema({
     name: {

@@ -1,5 +1,6 @@
 const Homestay = require('../models/homestay');
 const City = require('../models/city');
+const Service = require('../models/service');
 
 exports.getAll = async (req, res, next) => {
     try{
@@ -15,20 +16,11 @@ exports.getAll = async (req, res, next) => {
     }
 };
 
-exports.getItem = (req, res, next) => {
+exports.getItem = async (req, res, next) => {
     const homestayId = req.params.homestayId;
-    Homestay.findById(homestayId)
-        .then(homestay => {
-            if (homestay) {
-                homestay.populate({
-                    path:'city'
-                }).execPopulate().then (homestay => {
-                    res.json(homestay);
-                })
-                
-            }
-        })
-        .catch(err => console.log(err));
+    const homestay = await Homestay.findById(homestayId)
+    const services = await Service.find({homestay: homestayId})
+    res.send({homestay: homestay, services: services})
   };
 
 exports.getCreate = async (req, res, next) => {
@@ -40,25 +32,17 @@ exports.getCreate = async (req, res, next) => {
     }
 };
 
-exports.postCreate = (req, res, next) => {
-    // const name = req.body.name;
-    // const images = req.body.images;
-    // const city = req.body.city;
-    // const address = req.body.address;
-    // const phone = req.body.phone;
-    // const description = req.body.description;
-
-    // const homestay = new Homestay(
-    //     {name,
-    //     images,
-    //     city,
-    //     address,
-    //     description,
-    //     phone}
-    // );
-    const data = req.body.data;
-    const homestay = new Homestay(data);
-
+exports.postCreate = async (req, res, next) => {
+    console.log(req.body.city)
+    const city = await City.findOne({name: req.body.city})
+    const homestay = new Homestay({
+        name: req.body.name,
+        images: req.body.images,
+        address: req.body.address,
+        phone: req.body.phone,
+        description: req.body.description
+    })
+    homestay.city = city._id
     homestay.save()
         .then(result => {
             res.json(result) ;
@@ -66,6 +50,7 @@ exports.postCreate = (req, res, next) => {
         .catch(err => {
             console.log(err);
         });
+    // res.send("ok")
 };
 
 exports.postUpdate = (req, res, next) => {

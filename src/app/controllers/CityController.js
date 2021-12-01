@@ -29,9 +29,10 @@ class CityController {
 
   async getCity(req, res, next) {
     const city = await City.findById(req.params.id)
-    await city.populate({
-      path:'homestays'
-    }).execPopulate()
+    await city.populate(
+      'homestays'
+    ).execPopulate()
+    console.log(city)
     res.send(city)
   }
 
