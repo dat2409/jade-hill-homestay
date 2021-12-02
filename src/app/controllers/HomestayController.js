@@ -1,5 +1,6 @@
 const Homestay = require('../models/homestay');
 const City = require('../models/city');
+const Service = require('../models/service');
 
 exports.getAll = async (req, res, next) => {
     try{
@@ -15,20 +16,11 @@ exports.getAll = async (req, res, next) => {
     }
 };
 
-exports.getItem = (req, res, next) => {
+exports.getItem = async (req, res, next) => {
     const homestayId = req.params.homestayId;
-    Homestay.findById(homestayId)
-        .then(homestay => {
-            if (homestay) {
-                homestay.populate({
-                    path:'city'
-                }).execPopulate().then (homestay => {
-                    res.json(homestay);
-                })
-
-            }
-        })
-        .catch(err => console.log(err));
+    const homestay = await Homestay.findById(homestayId)
+    const services = await Service.find({homestay: homestayId})
+    res.send({homestay: homestay, services: services})
   };
 
 exports.getCreate = async (req, res, next) => {
