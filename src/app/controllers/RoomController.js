@@ -4,6 +4,15 @@ const User = require('../models/user');
 
 class RoomController {
   async createRoom(req, res, next) {
+    let h;
+    console.log(1);
+    try {
+      h = await Homestay.findOne({ _id: req.body.homestayId });
+      console.log(2);
+    } catch (e) {
+      res.status(404).send('not found homestay');
+      return;
+    }
     const r = await Room.find({ name: req.body.name })
       .populate({
         path: 'homestay',
@@ -20,7 +29,6 @@ class RoomController {
       }
     }
 
-    const h = await Homestay.findOne({ _id: req.body.homestayId });
     const u = await User.findOne({ _id: req.user._id });
     req.body.creator = u;
     req.body.homestay = h;
