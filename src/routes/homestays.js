@@ -6,7 +6,26 @@ const homestayController = require('../app/controllers/HomestayController');
 
 const router = express.Router();
 
-router.get('/create', homestayController.getCreate);
+/**
+ * @swagger
+ * /homestays/{homestayId}/roomTypes:
+ *   get:
+ *     description: get list room type of homestay
+ *     tags: [Room]
+ *     parameters:
+ *       - in: path
+ *         name: homestayId
+ *         schema:
+ *              type: string
+ *         required: true
+ *         description: homestay id
+ *     responses:
+ *       200:
+ *         description: get successfully
+ *       404:
+ *         description: not found
+ */
+router.get('/:homestayId/roomTypes', homestayController.getListRoomTypes);
 
 router.post('/create', homestayController.postCreate);
 
