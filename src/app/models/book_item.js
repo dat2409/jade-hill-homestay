@@ -1,12 +1,9 @@
 const mongoose = require('mongoose');
 
 const Schema = new mongoose.Schema({
-    name: {
-        type: String
-    },
-    book: {
+    room_type: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Book'
+        ref: 'Room',
     },
     checkin: {
         type: Date,
@@ -16,9 +13,9 @@ const Schema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    num_of_guest: {
+    persons: {
         type: Number
-    }
+    },
 
 },{timestamps: true});
 
