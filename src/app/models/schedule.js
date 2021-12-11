@@ -5,7 +5,7 @@ const Schema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Room',
     },
-    
+
     total_rooms: {
         type: Number,
         required: true,
