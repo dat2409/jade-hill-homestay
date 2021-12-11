@@ -5,6 +5,14 @@ const Schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Room',
     },
+    book_from: {
+      type: Date,
+      required: true,
+    },
+    book_to: {
+      type: Date,
+      required: true,
+    },
     checkin: {
         type: Date,
         required: true

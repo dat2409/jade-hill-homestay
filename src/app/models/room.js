@@ -26,6 +26,10 @@ const Schema = new mongoose.Schema(
       type: [Number],
       required: true,
     },
+    total_rooms: {
+      type: Number,
+      required: true
+    },
     price: {
       type: Number,
       required: true,
