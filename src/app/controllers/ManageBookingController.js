@@ -1,4 +1,3 @@
-const BookItem = require('../models/book_item');
 const Book = require('../models/book')
 
 class ManageBookingController {
@@ -6,7 +5,7 @@ class ManageBookingController {
         const bookArr = await Book.find();
         for (var i=0; i<bookArr.length; i++) {
             console.log('bookTo', bookArr[i]);
-            await bookArr[i].populate('books');
+            await bookArr[i].populate({path: 'books'}).execPopulate();
             console.log(bookArr[i].books);
         }
         res.json(bookArr);

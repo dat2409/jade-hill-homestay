@@ -10,7 +10,8 @@ class BookingController {
         room_type: books[i].room_type,
         checkin: books[i].checkin,
         checkout: books[i].checkout,
-        persons: books[i].persons
+        persons: books[i].persons,
+        volume: books[i].volume
       });
       await bookItem.save()
       console.log('item', bookItem)

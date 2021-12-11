@@ -1,6 +1,7 @@
 const Book = require('../models/book');
 const BookItem = require('../models/book_item');
 const Schedule = require('../models/schedule');
+const Room = require('../models/room');
 /**
  * Thêm 1 trường quantity vào bảng room
  *
@@ -10,37 +11,40 @@ const Schedule = require('../models/schedule');
  * quantity lưu vào schedule
  */
 class ScheduleController {
-  async create(req, res, next) {
-    const _id = req.body._id;
-    const books = req.body.books;
+  async deposit(req, res, next) {
+    const _id = req.body.book_id;
+    const book = await Book.findOneAndUpdate({ _id }, { is_deposited: true })
+    await book.populate({path: 'books'}).execPopulate();
+    const books = book.books;
 
-    Book.findOneAndUpdate({ _id }, { is_deposited: true })
-      .then(book => console.log(book));
-
-    await books.populate('books');
-    // const timeBooked = []
     for (var i = 0; i < books.length; i++) {
-      const schedule = new Schedule({
-        room_type: books[i].room_type,
-        quantity: books[i].quantity,
-      })
+      var schedule = await Schedule.findOne({ room_type: books[i].room_type });
+      if (!schedule) {
+        const room = await Room.findById(books[i].room_type)
+        schedule = new Schedule({
+          room_type: room._id,
+          total_rooms: room.total_rooms,
+          time_booked: []
+        })
+        await schedule.save();
+      }
+
+      const time_booked = schedule.time_booked;
+      for (var j=books[i].checkin; j<=books[i].checkout; j.setDate(j.getDate() + 1)) {
+        console.log('date', j);
+        const index = await time_booked.findIndex(element => element.day.getTime() == j.getTime());
+        if (index > -1) {
+          time_booked[index].volume += books[i].volume
+        } else {
+          const day = new Date(j)
+          time_booked.push({ day: day, volume: books[i].volume })
+        }
+      }
+      console.log(time_booked)
+      await schedule.updateOne({ time_booked })
     }
 
-  }
-
-  update(req, res, next) {
-    const _id = req.body._id;
-    const books = req.body.books;
-
-    Book.findOneAndUpdate({ _id }, { is_deposited: true })
-      .then(book => console.log(book));
-
-      for (var i = 0; i < books.length; i++) {
-        Schedule.findOneAndUpdate(
-          { room_type: books[i].room_type },
-          {  }
-          )
-      }
+    res.send('OK');
   }
 }
 module.exports = new ScheduleController();

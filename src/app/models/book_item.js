@@ -24,7 +24,11 @@ const Schema = new mongoose.Schema({
     persons: {
         type: Number
     },
-
+    volume: {
+        type: Number,
+        required: true,
+    },
+    
 },{timestamps: true});
 
 const  BookItem = mongoose.model('BookItem', Schema);
