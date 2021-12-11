@@ -2,14 +2,7 @@ const Book = require('../models/book');
 const BookItem = require('../models/book_item');
 const Schedule = require('../models/schedule');
 const Room = require('../models/room');
-/**
- * Thêm 1 trường quantity vào bảng room
- *
- * 1. Khi click vào đã Đặt cọc, thì chuyển is_deposited trong object book
- * thành true
- * 2. Lấy ra các item trong mảng books, từ đó lấy book_from, book_to, room_type,
- * quantity lưu vào schedule
- */
+
 class ScheduleController {
   async deposit(req, res, next) {
     const _id = req.body.book_id;
@@ -30,7 +23,7 @@ class ScheduleController {
       }
 
       const time_booked = schedule.time_booked;
-      for (var j=books[i].checkin; j<=books[i].checkout; j.setDate(j.getDate() + 1)) {
+      for (var j=books[i].book_from; j<=books[i].book_to; j.setDate(j.getDate() + 1)) {
         console.log('date', j);
         const index = await time_booked.findIndex(element => element.day.getTime() == j.getTime());
         if (index > -1) {

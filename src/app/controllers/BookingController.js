@@ -8,8 +8,8 @@ class BookingController {
     for (var i = 0; i < books.length; i++) {
       const bookItem = new BookItem({
         room_type: books[i].room_type,
-        checkin: books[i].checkin,
-        checkout: books[i].checkout,
+        book_from: books[i].book_from,
+        book_to: books[i].book_to,
         persons: books[i].persons,
         volume: books[i].volume
       });
