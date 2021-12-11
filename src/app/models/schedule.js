@@ -23,3 +23,7 @@ const Schema = mongoose.Schema({
         }
     }]
 })
+
+const Schedule = mongoose.model('Schedule', Schema);
+
+module.exports = Schedule;
