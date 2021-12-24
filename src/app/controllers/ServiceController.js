@@ -10,11 +10,16 @@ class ServiceController {
 
   //POST /services/create
   async postCreate(req, res, next) {
-    const service = new Service({
+    try {
+      const service = new Service({
         ...req.body
-    })
-    service.save()
-    res.send(service)
+      })
+      service.save()
+      res.send(service)
+    } catch (e) {
+      console.log(e)
+        res.status(400).send(e)
+    }
   }
 
   async delete(req, res, next) {
