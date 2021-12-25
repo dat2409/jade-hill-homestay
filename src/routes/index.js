@@ -8,6 +8,7 @@ const manageBooking = require('./manage-booking');
 const schedule = require('./schedule')
 const auth = require('../app/middleware/auth');
 const roomRouter = require('./room');
+const searchRouter = require('./search');
 
 function route(app) {
   app.use('/booking', booking);
@@ -19,6 +20,7 @@ function route(app) {
   app.use('/', staticPagesRouter);
   app.use('/roomTypes', auth.requireAuth, roomRouter);
   app.use('/users', auth.requireAuth, userRouter);
+  app.use('/search', auth.requireAuth, searchRouter);
   app.use('/', staticPagesRouter);
 }
 
