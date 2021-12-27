@@ -89,16 +89,17 @@ exports.getAll = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.getItem = (req, res, next) => {
-  const homestayId = req.params.homestayId;
-  Homestay.findById(homestayId)
-    .then((homestay) => {
-      if (homestay) {
-        res.json(homestay);
-      }
-    })
-    .catch((err) => console.log(err));
-};
+// bỏ - HuongCTT
+// exports.getItem = (req, res, next) => {
+//   const homestayId = req.params.homestayId;
+//   Homestay.findById(homestayId)
+//     .then((homestay) => {
+//       if (homestay) {
+//         res.json(homestay);
+//       }
+//     })
+//     .catch((err) => console.log(err));
+// };
 
 exports.postCreate = (req, res, next) => {
   // const name = req.body.name;
