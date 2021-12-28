@@ -73,15 +73,6 @@ class RoomController {
           }
         }
       }
-      // await Room.findByIdAndUpdate({_id:r._id},req.body,{new:true});
-      // let r=await Room.findOne({_id:r._id});
-      // res.send(r);
-      // Room.findByIdAndUpdate({ _id: r._id }, req.body, { new: true }).then(
-      //   (n) => {
-      //     console.log(2222);
-      //     res.send(n);
-      //   }
-      // );
 
       await Room.findByIdAndUpdate({ _id: r._id }, req.body, { new: true });
       let rooms = await Room.findOne({ _id: r._id });

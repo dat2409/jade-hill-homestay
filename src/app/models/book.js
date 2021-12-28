@@ -1,11 +1,28 @@
 const mongoose = require('mongoose');
 
 const Schema = new mongoose.Schema({
-    name: {
-        type: String
+    user_info: {
+        name: {
+            type: String
+        },
+        phone: {
+            type: String
+        },
+        email: {
+            type: String
+        },
+        sex: {
+            type: String,
+            enum: ['Male', 'Female', 'Other']
+        }
     },
-    is_paid: {
-        type: Number
+    books: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'BookItem'
+    }],
+    is_deposited: {
+        type: Boolean,
+        default: false,
     }
 
 },{timestamps: true});
