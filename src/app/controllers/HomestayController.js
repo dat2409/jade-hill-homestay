@@ -1,10 +1,12 @@
 const Homestay = require('../models/homestay');
 const City = require('../models/city');
 const Service = require('../models/service');
+const Room = require('../models/room');
 
 exports.getAll = async (req, res, next) => {
   try {
     const homestays = await Homestay.find();
+    console.log(homestays);
     for (var i = 0; i < homestays.length; i++) {
       await homestays[i]
         .populate({
@@ -43,8 +45,9 @@ exports.postCreate = async (req, res, next) => {
     address: req.body.address,
     phone: req.body.phone,
     description: req.body.description,
+    city: city.id
   });
-  homestay.city = city._id;
+
   homestay
     .save()
     .then((result) => {
@@ -54,7 +57,6 @@ exports.postCreate = async (req, res, next) => {
       console.log(err);
     });
 }; // res.send("ok")
-const Room = require('../models/room');
 
 exports.getListRoomTypes = async (req, res, next) => {
   console.log(req.params.homestayId);
@@ -87,47 +89,6 @@ exports.getAll = (req, res, next) => {
       res.json(homestays);
     })
     .catch((err) => console.log(err));
-};
-
-// bỏ - HuongCTT
-// exports.getItem = (req, res, next) => {
-//   const homestayId = req.params.homestayId;
-//   Homestay.findById(homestayId)
-//     .then((homestay) => {
-//       if (homestay) {
-//         res.json(homestay);
-//       }
-//     })
-//     .catch((err) => console.log(err));
-// };
-
-exports.postCreate = (req, res, next) => {
-  // const name = req.body.name;
-  // const images = req.body.images;
-  // const city = req.body.city;
-  // const address = req.body.address;
-  // const phone = req.body.phone;
-  // const description = req.body.description;
-
-  // const homestay = new Homestay(
-  //     {name,
-  //     images,
-  //     city,
-  //     address,
-  //     description,
-  //     phone}
-  // );
-  const data = req.body.data;
-  const homestay = new Homestay(data);
-
-  homestay
-    .save()
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 exports.postUpdate = (req, res, next) => {
