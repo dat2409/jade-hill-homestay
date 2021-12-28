@@ -6,6 +6,7 @@ const Room = require('../models/room');
 exports.getAll = async (req, res, next) => {
   try {
     const homestays = await Homestay.find();
+    console.log(homestays);
     for (var i = 0; i < homestays.length; i++) {
       await homestays[i]
         .populate({

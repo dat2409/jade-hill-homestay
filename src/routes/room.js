@@ -192,4 +192,25 @@ router.put('/:id', roomController.updateRoomType);
  */
 router.delete('/:id', roomController.deleteRoomType);
 
+/**
+ * @swagger
+ * /roomTypes/{id}:
+ *   get:
+ *     description: get room type for homestay
+ *     tags: [Room]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *              type: string
+ *         required: true
+ *         description: Room id
+ *     responses:
+ *       201:
+ *         description: get successfully
+ *       404:
+ *         description: not found
+ */
+router.get('/:id', roomController.getRoomType);
+
 module.exports = router;

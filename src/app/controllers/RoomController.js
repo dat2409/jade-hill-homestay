@@ -73,17 +73,22 @@ class RoomController {
           }
         }
       }
-      Room.findByIdAndUpdate({ _id: r._id }, req.body, { new: true }).then(
-        (n) => {
-          console.log(2222);
-          res.send(n);
-        }
-      );
+
+      await Room.findByIdAndUpdate({ _id: r._id }, req.body, { new: true });
+      let rooms = await Room.findOne({ _id: r._id });
+      res.send(rooms);
     } else res.status(404).send('not found');
   }
   deleteRoomType(req, res, next) {
     Room.findOneAndDelete({ _id: req.params.id }).then((result) => {
       if (result) res.send('deleted');
+      else res.status(404).send('not found');
+    });
+  }
+
+  getRoomType(req, res, next) {
+    Room.findOne({ _id: req.params.id }).then((result) => {
+      if (result) res.send(result);
       else res.status(404).send('not found');
     });
   }
