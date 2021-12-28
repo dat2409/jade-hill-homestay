@@ -7,7 +7,7 @@ const auth = require('../app/middleware/auth');
 const roomRouter = require('./room');
 
 function route(app) {
-  app.use('/homestays', auth.requireAuth, homestays);
+  app.use('/homestays', homestays);
   app.use('/cities', auth.requireAuth, cityRouter);
   app.use('/services', auth.requireAuth, serviceRouter);
   app.use('/', staticPagesRouter);
