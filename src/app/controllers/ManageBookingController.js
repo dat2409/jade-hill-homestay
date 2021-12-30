@@ -20,7 +20,7 @@ class ManageBookingController {
   }
 
   async deposit(req, res, next) {
-    const _id = req.body.book_id;
+    const _id = req.params.bookId;
     const book = await Book.findOneAndUpdate({ _id }, { is_deposited: true })
     await book.populate({path: 'books'}).execPopulate();
     const bookItems = book.books;
@@ -29,43 +29,45 @@ class ManageBookingController {
       await BookItem.findOneAndUpdate({ _id : bookItems[i] }, { status : 1 })
     }
 
-    res.send(200)
+    res.sendStatus(200)
   }
 
   async checkin(req, res, next) {
-    //body {book_id, room_type[], checkin}
-    const _id = req.body.book_id;
-    const roomArr = req.body.room_type;
+    //body {checkin}
+    const _id = req.params.bookId;
     const checkin = new Date(req.body.checkin);
 
     const book = await Book.findById(_id)
     await book.populate({path: 'books'}).execPopulate();
     const bookItems = book.books;
 
-    for (var i = 0; i < roomArr; i++) {
-      const item = bookItems.find(element => element.room_type == roomArr[i])
-      await BookItem.findOneAndUpdate({ _id : item._id }, { checkin: checkin, status : 2 })
+    for (var i = 0; i < bookItems.length; i++) {
+      await BookItem.findOneAndUpdate({ _id : bookItems[i] }, { checkin: checkin, status : 2 })
     }
 
-    res.send(200)
+    res.sendStatus(200)
   }
 
   async checkout(req, res, next) {
-    //body {book_id, room_type[], checkout}
-    const _id = req.body.book_id;
-    const roomArr = req.body.room_type;
+    //body {checkout}
+    const _id = req.params.bookId;
     const checkout = new Date(req.body.checkout);
 
     const book = await Book.findById(_id)
     await book.populate({path: 'books'}).execPopulate();
     const bookItems = book.books;
 
-    for (var i = 0; i < roomArr; i++) {
-      const item = bookItems.find(element => element.room_type == roomArr[i])
-      await BookItem.findOneAndUpdate({ _id : item._id }, { checkout: checkout, status : 3 })
+    for (var i = 0; i < bookItems.length; i++) {
+      await BookItem.findOneAndUpdate({ _id : bookItems[i] }, { checkout: checkout, status : 3 })
     }
 
-    res.send(200)
+    // const roomArr = req.body.room_type;
+    // for (var i = 0; i < roomArr; i++) {
+    //   const item = bookItems.find(element => element.room_type == roomArr[i])
+    //   await BookItem.findOneAndUpdate({ _id : item._id }, { checkin: checkin, status : 2 })
+    // }
+
+    res.sendStatus(200)
   }
 
   deleteOne(req, res, next) {

@@ -12,8 +12,7 @@ const searchRouter = require('./search');
 
 function route(app) {
   app.use('/booking', booking);
-  app.use('/manage-booking', manageBooking);
-  app.use('/schedule', schedule);
+  app.use('/manage-booking', auth.requireAuth, manageBooking);
   app.use('/homestays', auth.requireAuth, homestays);
   app.use('/cities', auth.requireAuth, cityRouter);
   app.use('/services', auth.requireAuth, serviceRouter);
