@@ -1,5 +1,5 @@
 const path = require('path');
-
+const auth = require('../app/middleware/auth');
 const express = require('express');
 
 const homestayController = require('../app/controllers/HomestayController');
