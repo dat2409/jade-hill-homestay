@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
-const Schema = new mongoose.Schema({
+const Schema = new mongoose.Schema(
+  {
     room_type: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Room',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Room',
     },
     book_from: {
       type: Date,
@@ -14,23 +15,24 @@ const Schema = new mongoose.Schema({
       required: true,
     },
     checkin: {
-        type: Date,
-        required: true
+      type: Date,
+      required: true,
     },
     checkout: {
-        type: Date,
-        required: true
+      type: Date,
+      required: true,
     },
     persons: {
-        type: Number
+      type: Number,
     },
     volume: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
-    
-},{timestamps: true});
+  },
+  { timestamps: true }
+);
 
-const  BookItem = mongoose.model('BookItem', Schema);
+const BookItem = mongoose.model('BookItem', Schema);
 
 module.exports = BookItem;

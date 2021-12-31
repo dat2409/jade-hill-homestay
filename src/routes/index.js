@@ -14,7 +14,7 @@ function route(app) {
   app.use('/booking', booking);
   app.use('/manage-booking', manageBooking);
   app.use('/schedule', schedule);
-  app.use('/homestays', auth.requireAuth, homestays);
+  app.use('/homestays', homestays);
   app.use('/cities', auth.requireAuth, cityRouter);
   app.use('/services', auth.requireAuth, serviceRouter);
   app.use('/', staticPagesRouter);
