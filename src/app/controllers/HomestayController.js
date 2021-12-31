@@ -2,11 +2,13 @@ const Homestay = require('../models/homestay');
 const City = require('../models/city');
 const Service = require('../models/service');
 const Room = require('../models/room');
+const BookItem = require('../models/book_item');
+const { count } = require('../models/homestay');
 
 exports.getAll = async (req, res, next) => {
   try {
     const homestays = await Homestay.find();
-    console.log(homestays);
+
     for (var i = 0; i < homestays.length; i++) {
       await homestays[i]
         .populate({
@@ -45,7 +47,7 @@ exports.postCreate = async (req, res, next) => {
     address: req.body.address,
     phone: req.body.phone,
     description: req.body.description,
-    city: city.id
+    city: city.id,
   });
 
   homestay
@@ -59,9 +61,8 @@ exports.postCreate = async (req, res, next) => {
 }; // res.send("ok")
 
 exports.getListRoomTypes = async (req, res, next) => {
-  console.log(req.params.homestayId);
   const h = await Homestay.findOne({ _id: req.params.homestayId });
-  console.log(h);
+
   if (h) {
     const r = await Room.find({})
       .populate({
@@ -81,7 +82,43 @@ exports.getListRoomTypes = async (req, res, next) => {
     res.send(result);
   } else res.status(404).send('not found');
 };
+exports.getListRoomTypesFilter = async (req, res, next) => {
+  const h = await Homestay.findOne({ _id: req.params.homestayId });
+  if (h) {
+    const r = await Room.find({})
+      .populate({
+        path: 'homestay',
+        match: { _id: req.params.homestayId },
+        select: '_id',
+      })
+      .exec();
+    let result = [];
+    for (var i = 0; i < r.length; i++) {
+      if (r[i].homestay) {
+        result.push(r[i].toObject());
+      }
+    }
+    let start = new Date(req.query.start * 1000);
+    start.setHours(start.getHours() + 7);
+    let end = new Date(req.query.end * 1000);
+    end.setHours(end.getHours() + 7);
+    for (var i = 0; i < result.length; i++) {
+      let count = await BookItem.countDocuments({
+        $and: [
+          { book_to: { $gte: start } },
+          { book_from: { $not: { $gte: end } } },
+          { status: { $in: [1, 2] } },
+        ],
+      });
+      console.log(111, count);
 
+      result[i]['total_rooms'] = result[i]['room_nums'].length;
+      result[i]['total'] = Number(result[i]['total_rooms']) - Number(count);
+    }
+    res.send(result);
+    return;
+  } else res.status(404).send('not found');
+};
 exports.getAll = (req, res, next) => {
   Homestay.find()
     .then((homestays) => {
