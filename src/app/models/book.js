@@ -16,6 +16,18 @@ const Schema = new mongoose.Schema({
             enum: ['Male', 'Female', 'Other']
         }
     },
+    guests: {
+        type: Number,
+        required: true,
+    },
+    checkin: {
+        type: Date,
+        required: true,
+    },
+    checkout: {
+        type: Date,
+        required: true,
+    },
     books: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'BookItem'
@@ -23,6 +35,10 @@ const Schema = new mongoose.Schema({
     is_deposited: {
         type: Boolean,
         default: false,
+    },
+    total: {
+        type: Number,
+        required: true,
     }
 
 },{timestamps: true});

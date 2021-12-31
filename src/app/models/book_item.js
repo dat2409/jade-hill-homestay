@@ -29,9 +29,17 @@ const Schema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+<<<<<<< HEAD
   },
   { timestamps: true }
 );
+=======
+    status: {
+        type: Number,
+        enum: [0,1,2,3]  //0-unpaid 1-paid 2-checkedin 3-checkedout
+    }
+},{timestamps: true});
+>>>>>>> main
 
 const BookItem = mongoose.model('BookItem', Schema);
 
