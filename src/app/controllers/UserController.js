@@ -78,6 +78,16 @@ class UserController {
       .then(() => res.send('Update successfully!'))
   }
 
+  async updatePassword(req, res, next) {
+    const salt = await bcrypt.genSalt(10);
+    const hashNewPassword = await bcrypt.hash(req.body.password, salt);
+
+    User.updateOne({ _id: req.params.id }, {
+      password: hashNewPassword
+    })
+      .then(() => res.send('Change password successfully!'));
+  }
+
   //DELETE /users/:id
   async destroy(req, res, next) {
     await User.deleteOne({ _id: req.params.id })
