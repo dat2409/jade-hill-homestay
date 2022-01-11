@@ -19,6 +19,7 @@ router.get('/edit/:id', userController.edit);
  *       401:
  */
 router.get('/', userController.index);
+router.patch('/change-password/:id', userController.updatePassword);
 router.patch('/:id', userController.update);
 router.delete('/:id', userController.destroy);
 
