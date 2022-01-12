@@ -1,6 +1,7 @@
 const Book = require('../models/book')
 const mongoose = require('../../util/mongoose');
 const BookItem = require('../models/book_item');
+const User = require('../models/user');
 
 class ManageBookingController {
   async getAll(req, res, next) {
@@ -22,11 +23,11 @@ class ManageBookingController {
   async deposit(req, res, next) {
     const _id = req.params.bookId;
     const book = await Book.findOneAndUpdate({ _id }, { is_deposited: true })
-    await book.populate({path: 'books'}).execPopulate();
+    await book.populate({ path: 'books' }).execPopulate();
     const bookItems = book.books;
 
     for (var i = 0; i < bookItems.length; i++) {
-      await BookItem.findOneAndUpdate({ _id : bookItems[i] }, { status : 1 })
+      await BookItem.findOneAndUpdate({ _id: bookItems[i] }, { status: 1 })
     }
 
     res.sendStatus(200)
@@ -38,11 +39,11 @@ class ManageBookingController {
     const checkin = new Date(req.body.checkin);
 
     const book = await Book.findById(_id)
-    await book.populate({path: 'books'}).execPopulate();
+    await book.populate({ path: 'books' }).execPopulate();
     const bookItems = book.books;
 
     for (var i = 0; i < bookItems.length; i++) {
-      await BookItem.findOneAndUpdate({ _id : bookItems[i] }, { checkin: checkin, status : 2 })
+      await BookItem.findOneAndUpdate({ _id: bookItems[i] }, { checkin: checkin, status: 2 })
     }
 
     res.sendStatus(200)
@@ -54,11 +55,11 @@ class ManageBookingController {
     const checkout = new Date(req.body.checkout);
 
     const book = await Book.findById(_id)
-    await book.populate({path: 'books'}).execPopulate();
+    await book.populate({ path: 'books' }).execPopulate();
     const bookItems = book.books;
 
     for (var i = 0; i < bookItems.length; i++) {
-      await BookItem.findOneAndUpdate({ _id : bookItems[i] }, { checkout: checkout, status : 3 })
+      await BookItem.findOneAndUpdate({ _id: bookItems[i] }, { checkout: checkout, status: 3 })
     }
 
     // const roomArr = req.body.room_type;
@@ -73,6 +74,15 @@ class ManageBookingController {
   deleteOne(req, res, next) {
     Book.deleteOne({ _id: req.params.bookId })
       .then(() => res.send('Delete successfully!'))
+  }
+
+  addServices(req, res, next) {
+    const data = req.body;
+    Book.updateOne({ _id: req.params.bookId }, {
+      total: data.total,
+      services: data.services
+    })
+      .then(() => res.send('Add services to bill successfully!'));
   }
 }
 module.exports = new ManageBookingController();

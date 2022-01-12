@@ -14,6 +14,8 @@ router.put('/:bookId/checkout', ManageBookingController.checkout);
 
 router.put('/:bookId/deposit', ManageBookingController.deposit);
 
+router.patch('/:bookId/services', ManageBookingController.addServices);
+
 router.get('/:bookId', ManageBookingController.getItem);
 
 router.delete('/:bookId', ManageBookingController.deleteOne);

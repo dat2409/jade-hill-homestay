@@ -36,11 +36,20 @@ const Schema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    services: [{
+      service: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Service'
+      },
+      volume: {
+        type: Number,
+        require: true
+      }
+    }],
     total: {
         type: Number,
         required: true,
     }
-
 },{timestamps: true});
 
 const  Book = mongoose.model('Book', Schema);
