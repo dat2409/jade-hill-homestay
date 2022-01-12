@@ -88,6 +88,10 @@ class UserController {
       .then(() => res.send('Change password successfully!'));
   }
 
+  profile(req, res, next) {
+    res.send(req.user);
+  }
+
   //DELETE /users/:id
   async destroy(req, res, next) {
     await User.deleteOne({ _id: req.params.id })
