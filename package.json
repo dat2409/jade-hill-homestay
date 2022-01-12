@@ -33,6 +33,7 @@
     "mongoose-delete": "^0.5.4",
     "mongoose-seed": "^0.6.0",
     "mongoose-slug-generator": "^1.0.4",
+    "nodemailer": "^6.7.2",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6"
   },

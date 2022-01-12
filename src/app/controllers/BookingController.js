@@ -1,5 +1,6 @@
 const BookItem = require('../models/book_item');
-const Book = require('../models/book')
+const Book = require('../models/book');
+const nodemailer = require('nodemailer');
 
 class BookingController {
   async create(req, res, next) {
@@ -28,7 +29,74 @@ class BookingController {
       total: total,
       books: bookArr
     })
-    await book.save()
+    await book.save();
+    await book.populate({
+      path: 'books',
+      populate: {
+        path: 'room_type',
+        populate: {
+          path: 'homestay'
+        }
+      }
+    }).execPopulate();
+    var transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: "thaidat2409@gmail.com",
+        pass: "dattrong1@"
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+
+    var content = '';
+    let newCheckin = new Date(book.checkin).toLocaleDateString();
+    let newCheckout = new Date(book.checkout).toLocaleDateString();
+    content += `
+    <div style="padding: 10px; background-color: #003375">
+      <div style="padding: 10px; background-color: white;">
+        <h1 style="color: blue">JadeHil Homestay Announcement</h1>
+        <h2 style="color: green">Bạn đã đặt thành công homestay <span style="color: purple">${book.books[0].room_type.homestay.name}</span> với các thông tin sau:</h2>
+        <ul>
+          <h3>
+            <li>Họ và tên: ${book.user_info.name}</li>
+            <li>Số điện thoại: ${book.user_info.phone}</li>
+            <li>Từ ngày: ${newCheckin}</li>
+            <li>Đến ngày: ${newCheckout}</li>
+            <li>Số người: ${book.guests}</li>
+            <li>Tổng tiền: ${book.total} ($)</li>
+          </h3>
+        </ul>
+        <h2>Đơn đặt phòng của bạn đã được ghi nhận. vui lòng thanh toán tiền phòng theo thông tin sau đây</h2>
+          <ul>
+            <h3>
+              <li>Chủ tài khoản: THAI DOAN DAT</li>
+              <li>Số tài khoản: 12910000144428</li>
+              <li>Ngân hàng: BIDV</li>
+            </h3>
+          </ul>
+        <h3>Lưu ý: nếu không hoàn thành việc thanh toán, đơn của bạn sẽ bị hủy.</h3>
+      </div>
+    </div>
+    `;
+
+    var mainOptions = {
+      from: 'SetSail Tour Travel',
+      to: 'thaidoandat1@gmail.com',
+      subject: 'Xác nhận thông tin đặt homestay',
+      html: content
+    }
+
+    transporter.sendMail(mainOptions, function (err, info) {
+      if (err) {
+        console.log(err);
+      }
+      else {
+        console.log('Message sent: ' + info.response);
+        res.send('ok');
+      }
+    })
     res.json(book)
   }
 

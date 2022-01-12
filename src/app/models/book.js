@@ -36,6 +36,10 @@ const Schema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    is_paid: {
+      type: Boolean,
+      default: false,
+  },
     services: [{
       service: {
         type: mongoose.Schema.Types.ObjectId,
