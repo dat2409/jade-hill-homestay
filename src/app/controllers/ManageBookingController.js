@@ -31,7 +31,7 @@ class ManageBookingController {
 
   async deposit(req, res, next) {
     const _id = req.params.bookId;
-    const book = await Book.findOneAndUpdate({ _id }, { is_deposited: true })
+    const book = await Book.findOneAndUpdate({ _id }, { is_deposited: true, status: 1 })
     await book.populate({
       path: 'books',
       populate: {
@@ -112,6 +112,8 @@ class ManageBookingController {
       await BookItem.findOneAndUpdate({ _id: bookItems[i] }, { checkin: checkin, status: 2 })
     }
 
+    await Book.findOneAndUpdate({ _id }, { checkin: checkin, status: 2 })
+
     res.sendStatus(200)
   }
 
@@ -129,7 +131,9 @@ class ManageBookingController {
     }
 
     await Book.updateOne({ _id: req.params.bookId }, {
-      is_paid: true
+      is_paid: true,
+      checkout,
+      status: 3
     })
 
     // const roomArr = req.body.room_type;
