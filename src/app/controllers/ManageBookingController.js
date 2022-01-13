@@ -31,7 +31,7 @@ class ManageBookingController {
 
   async deposit(req, res, next) {
     const _id = req.params.bookId;
-    const book = await Book.findOneAndUpdate({ _id }, { is_deposited: true })
+    const book = await Book.findOneAndUpdate({ _id }, { is_deposited: true, status: 1 })
     await book.populate({
       path: 'books',
       populate: {
@@ -73,8 +73,8 @@ class ManageBookingController {
             <li>Từ ngày: ${checkin}</li>
             <li>Đến ngày: ${checkout}</li>
             <li>Số người: ${book.guests}</li>
-            <li>Tổng cộng: ${book.total} ($)</li>
-            <li>Đã đặt cọc: ${book.total} ($)</li>
+            <li>Tổng cộng: ${book.total} (đồng)</li>
+            <li>Đã đặt cọc: ${book.total} (đồng)</li>
           </h3>
         </ul>
       </div>
@@ -83,7 +83,7 @@ class ManageBookingController {
 
     var mainOptions = {
       from: 'SetSail Tour Travel',
-      to: 'thaidoandat1@gmail.com',
+      to: book.user_info.email,
       subject: 'Thông báo đặt cọc thành công',
       html: content
     }
@@ -100,7 +100,6 @@ class ManageBookingController {
   }
 
   async checkin(req, res, next) {
-    //body {checkin}
     const _id = req.params.bookId;
     const checkin = new Date(req.body.checkin);
 
@@ -111,6 +110,8 @@ class ManageBookingController {
     for (var i = 0; i < bookItems.length; i++) {
       await BookItem.findOneAndUpdate({ _id: bookItems[i] }, { checkin: checkin, status: 2 })
     }
+
+    await Book.findOneAndUpdate({ _id }, { checkin: checkin, status: 2 })
 
     res.sendStatus(200)
   }
@@ -129,7 +130,9 @@ class ManageBookingController {
     }
 
     await Book.updateOne({ _id: req.params.bookId }, {
-      is_paid: true
+      is_paid: true,
+      checkout,
+      status: 3
     })
 
     // const roomArr = req.body.room_type;
