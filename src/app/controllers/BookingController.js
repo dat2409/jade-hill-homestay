@@ -31,7 +31,6 @@ class BookingController {
       total: total,
       books: bookArr
     })
-    await book.save();
     await book.populate({
       path: 'books',
       populate: {
@@ -41,6 +40,7 @@ class BookingController {
         }
       }
     }).execPopulate();
+    await book.save();
     var transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
