@@ -100,7 +100,6 @@ class ManageBookingController {
   }
 
   async checkin(req, res, next) {
-    //body {checkin}
     const _id = req.params.bookId;
     const checkin = new Date(req.body.checkin);
 
