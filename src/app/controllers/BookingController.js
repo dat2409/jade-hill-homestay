@@ -24,6 +24,8 @@ class BookingController {
     const book = new Book({
       user_info: user_info,
       guests: guests,
+      book_from: checkin,
+      book_to: checkout,
       checkin: checkin,
       checkout: checkout,
       total: total,
