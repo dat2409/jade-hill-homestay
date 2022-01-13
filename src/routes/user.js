@@ -5,7 +5,16 @@ const userAuth = require('../app/middleware/auth');
 const router = express.Router();
 
 router.get('/create', userController.create);
-router.get('/profile', userController.profile);
+/**
+ * @swagger
+ * /users/visit:
+ *   get:
+ *     description: user visit homestays
+ *     responses:
+ *       200:
+ *         description: successfully
+ */
+router.get('/visit', userController.countVisit);
 router.post('/store', userController.store);
 router.get('/:id', userController.show);
 router.get('/edit/:id', userController.edit);
@@ -20,7 +29,7 @@ router.get('/edit/:id', userController.edit);
  *       401:
  */
 router.get('/', userController.index);
-router.patch('/change-password/:id', userController.updatePassword);
+
 router.patch('/:id', userController.update);
 router.delete('/:id', userController.destroy);
 

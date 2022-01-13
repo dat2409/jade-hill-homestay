@@ -14,40 +14,42 @@ class BookingController {
         checkin: checkin,
         checkout: checkout,
         volume: books[i].volume,
-        status: 0
+        status: 0,
       });
-      await bookItem.save()
-      console.log('item', bookItem)
-      bookArr.push(bookItem._id)
+      await bookItem.save();
+      console.log('item', bookItem);
+      bookArr.push(bookItem._id);
     }
-    console.log(bookArr)
+    console.log(bookArr);
     const book = new Book({
       user_info: user_info,
       guests: guests,
       checkin: checkin,
       checkout: checkout,
       total: total,
-      books: bookArr
-    })
+      books: bookArr,
+    });
     await book.save();
-    await book.populate({
-      path: 'books',
-      populate: {
-        path: 'room_type',
+    await book
+      .populate({
+        path: 'books',
         populate: {
-          path: 'homestay'
-        }
-      }
-    }).execPopulate();
+          path: 'room_type',
+          populate: {
+            path: 'homestay',
+          },
+        },
+      })
+      .execPopulate();
     var transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user: "thaidat2409@gmail.com",
-        pass: "dattrong1@"
+        user: 'thaidat2409@gmail.com',
+        pass: 'dattrong1@',
       },
       tls: {
-        rejectUnauthorized: false
-      }
+        rejectUnauthorized: false,
+      },
     });
 
     var content = '';
@@ -68,7 +70,7 @@ class BookingController {
             <li>Tổng tiền: ${book.total} ($)</li>
           </h3>
         </ul>
-        <h2>Đơn đặt phòng của bạn đã được ghi nhận. vui lòng thanh toán tiền phòng theo thông tin sau đây</h2>
+        <h2>Đơn đặt phòng của bạn đã được ghi nhận. Vui lòng thanh toán tiền phòng theo thông tin sau đây</h2>
           <ul>
             <h3>
               <li>Chủ tài khoản: THAI DOAN DAT</li>
@@ -85,19 +87,18 @@ class BookingController {
       from: 'SetSail Tour Travel',
       to: 'thaidoandat1@gmail.com',
       subject: 'Xác nhận thông tin đặt homestay',
-      html: content
-    }
+      html: content,
+    };
 
     transporter.sendMail(mainOptions, function (err, info) {
       if (err) {
         console.log(err);
-      }
-      else {
+      } else {
         console.log('Message sent: ' + info.response);
         res.send('ok');
       }
-    })
-    res.json(book)
+    });
+    res.json(book);
   }
 
   // async create(req, res, next) {
