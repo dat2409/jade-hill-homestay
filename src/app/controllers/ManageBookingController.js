@@ -73,8 +73,8 @@ class ManageBookingController {
             <li>Từ ngày: ${checkin}</li>
             <li>Đến ngày: ${checkout}</li>
             <li>Số người: ${book.guests}</li>
-            <li>Tổng cộng: ${book.total} ($)</li>
-            <li>Đã đặt cọc: ${book.total} ($)</li>
+            <li>Tổng cộng: ${book.total} (đồng)</li>
+            <li>Đã đặt cọc: ${book.total} (đồng)</li>
           </h3>
         </ul>
       </div>
@@ -83,7 +83,7 @@ class ManageBookingController {
 
     var mainOptions = {
       from: 'SetSail Tour Travel',
-      to: 'thaidoandat1@gmail.com',
+      to: book.user_info.email,
       subject: 'Thông báo đặt cọc thành công',
       html: content
     }
