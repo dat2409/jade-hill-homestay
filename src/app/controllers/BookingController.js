@@ -65,10 +65,11 @@ class BookingController {
             <li>Từ ngày: ${newCheckin}</li>
             <li>Đến ngày: ${newCheckout}</li>
             <li>Số người: ${book.guests}</li>
-            <li>Tổng tiền: ${book.total} ($)</li>
+            <li>Tổng tiền: ${book.total} (đồng)</li>
+            <li>Tổng tiền phải đặt cọc: ${book.total} (đồng)</li>
           </h3>
         </ul>
-        <h2>Đơn đặt phòng của bạn đã được ghi nhận. vui lòng thanh toán tiền phòng theo thông tin sau đây</h2>
+        <h2>Đơn đặt phòng của bạn đã được ghi nhận. Vui lòng thanh toán tiền phòng theo thông tin sau đây</h2>
           <ul>
             <h3>
               <li>Chủ tài khoản: THAI DOAN DAT</li>
@@ -76,14 +77,14 @@ class BookingController {
               <li>Ngân hàng: BIDV</li>
             </h3>
           </ul>
-        <h3>Lưu ý: nếu không hoàn thành việc thanh toán, đơn của bạn sẽ bị hủy.</h3>
+        <h3 style="color: red">Lưu ý: nếu không hoàn thành việc thanh toán, đơn của bạn sẽ bị hủy.</h3>
       </div>
     </div>
     `;
 
     var mainOptions = {
       from: 'SetSail Tour Travel',
-      to: 'thaidoandat1@gmail.com',
+      to: book.user_info.email,
       subject: 'Xác nhận thông tin đặt homestay',
       html: content
     }
