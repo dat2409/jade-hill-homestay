@@ -40,6 +40,7 @@ class BookingController {
         }
       }
     }).execPopulate();
+    book.homestayId = book.books[0].room_type.homestay._id;
     await book.save();
     var transporter = nodemailer.createTransport({
       service: 'Gmail',
