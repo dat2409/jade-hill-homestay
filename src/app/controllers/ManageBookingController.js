@@ -157,5 +157,12 @@ class ManageBookingController {
     })
       .then(() => res.send('Add services to bill successfully!'));
   }
+
+  searchBooking(req, res, next) {
+    Book.find({
+      'user_info.phone': req.params.phone
+    })
+      .then(bookings => res.send(bookings));
+  }
 }
 module.exports = new ManageBookingController();
