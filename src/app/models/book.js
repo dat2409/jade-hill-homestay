@@ -40,6 +40,10 @@ const Schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'BookItem'
     }],
+    homestayId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Homestay'
+    },
     is_deposited: {
         type: Boolean,
         default: false,
