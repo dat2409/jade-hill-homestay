@@ -72,7 +72,7 @@ class BookingController {
             <li>Tổng tiền phải đặt cọc: ${book.total} (đồng)</li>
           </h3>
         </ul>
-        <h2>Đơn đặt phòng của bạn đã được ghi nhận. Vui lòng thanh toán tiền phòng theo thông tin sau đây</h2>
+        <h2>Vui lòng thanh toán tiền phòng theo thông tin sau đây</h2>
           <ul>
             <h3>
               <li>Chủ tài khoản: THAI DOAN DAT</li>
@@ -86,7 +86,7 @@ class BookingController {
     `;
 
     var mainOptions = {
-      from: 'SetSail Tour Travel',
+      from: 'JadeHill Homestay',
       to: book.user_info.email,
       subject: 'Xác nhận thông tin đặt homestay',
       html: content
