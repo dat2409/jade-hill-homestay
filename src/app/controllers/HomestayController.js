@@ -153,10 +153,15 @@ exports.deleteOne = (req, res, next) => {
 exports.getOneStatistic = async (req, res, next) => {
   if (req.query.year) {
     var year = parseInt(req.query.year)
+    if (req.query.feature == "money" ){
+      filterBy = "$total"
+    } else if (req.query.feature == "guests") {
+      filterBy = "$guests"
+    }
     //month
     if (req.query.type == "month") {
-      var moneyList = [0,0,0,0,0,0,0,0,0,0,0,0];
-      var totalMoney = 0;
+      var list = [0,0,0,0,0,0,0,0,0,0,0,0];
+      var total = 0;
       var max = 0
       const moneyBooking = await Book.aggregate([
         { $match: {
@@ -169,24 +174,24 @@ exports.getOneStatistic = async (req, res, next) => {
           $group:
             {
               _id: { month: { $month: "$checkout"}, year: { $year: "$checkout" } },
-              total: { $sum: "$total" }
+              total: { $sum: filterBy }
             }
           }
         ]
       )
       for (var i = 0; i < moneyBooking.length; i++){
-        moneyList[moneyBooking[i]._id.month - 1] = moneyBooking[i].total 
-        totalMoney += moneyBooking[i].total 
+        list[moneyBooking[i]._id.month - 1] = moneyBooking[i].total 
+        total += moneyBooking[i].total 
         if (moneyBooking[i].total > max ){
           max = moneyBooking[i].total
         }
       }
-      res.status(200).send({moneyList, totalMoney, max})
+      res.status(200).send({list, total, max})
     } else if (req.query.type == "quarter"){
       //quarter
       const quarters = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]]
-      var moneyList = [0,0,0,0];
-      var totalMoney = 0;
+      var list = [0,0,0,0];
+      var total = 0;
       var max = 0
       for (var j = 0; j < 4; j++) {
         for( var i = 0; i <= 3; i++) {
@@ -220,21 +225,21 @@ exports.getOneStatistic = async (req, res, next) => {
               $group:
                 {
                   _id: { month: { $month: "$checkout"}, year: { $year: "$checkout" } },
-                  total: { $sum: "$total" }
+                  total: { $sum: filterBy }
                 }
             }
           ])
           if (moneyBooking.length != 0) {
-            moneyList[j] += moneyBooking[0].total
-            totalMoney += moneyBooking[0].total
-            if (moneyBooking[0].total > max ){
-              max = moneyBooking[0].total
-            }
+            list[j] += moneyBooking[0].total
+            total += moneyBooking[0].total
           }
+        }
+        if (list[j] > max ){
+          max = list[j]
         }
       }
       
-      res.status(200).send({moneyList, totalMoney, max})
+      res.status(200).send({list, total, max})
     }
   } else {
     var totalMoney = 0;
