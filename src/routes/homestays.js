@@ -78,5 +78,6 @@ router.delete('/:homestayId', auth.requireAuth, homestayController.deleteOne);
 router.delete('/delete', auth.requireAuth, homestayController.deleteMany);
 
 router.get('/', auth.requireAuth, homestayController.getAll);
+router.get('/:id/statistics', auth.requireAuth, homestayController.getOneStatistic);
 
 module.exports = router;
