@@ -12,7 +12,7 @@ router.delete('/:id/delete', cityController.delete);
 
 router.get('/:id/update', cityController.getUpdate);
 
-router.post('/:id/update', cityController.postUpdate);
+router.put('/:id/update', cityController.postUpdate);
 
 router.get('/:id', cityController.getCity);
 

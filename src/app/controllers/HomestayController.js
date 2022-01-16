@@ -3,7 +3,10 @@ const City = require('../models/city');
 const Service = require('../models/service');
 const Room = require('../models/room');
 const BookItem = require('../models/book_item');
+const Book = require('../models/book');
 const { count } = require('../models/homestay');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -146,5 +149,132 @@ exports.deleteOne = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
+
+exports.getOneStatistic = async (req, res, next) => {
+  if (req.query.year) {
+    var year = parseInt(req.query.year)
+    //month
+    if (req.query.type == "month") {
+      var moneyList = [0,0,0,0,0,0,0,0,0,0,0,0];
+      var totalMoney = 0;
+      var max = 0
+      const moneyBooking = await Book.aggregate([
+        { $match: {
+            homestayId: ObjectId(req.params.id),
+            status: 3,
+            $expr: { "$eq": [{ "$year": "$checkout" }, year] }
+          } 
+        },
+        {
+          $group:
+            {
+              _id: { month: { $month: "$checkout"}, year: { $year: "$checkout" } },
+              total: { $sum: "$total" }
+            }
+          }
+        ]
+      )
+      for (var i = 0; i < moneyBooking.length; i++){
+        moneyList[moneyBooking[i]._id.month - 1] = moneyBooking[i].total 
+        totalMoney += moneyBooking[i].total 
+        if (moneyBooking[i].total > max ){
+          max = moneyBooking[i].total
+        }
+      }
+      res.status(200).send({moneyList, totalMoney, max})
+    } else if (req.query.type == "quarter"){
+      //quarter
+      const quarters = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]]
+      var moneyList = [0,0,0,0];
+      var totalMoney = 0;
+      var max = 0
+      for (var j = 0; j < 4; j++) {
+        for( var i = 0; i <= 3; i++) {
+          var moneyBooking = await Book.aggregate([
+            { $match: {
+                homestayId: ObjectId(req.params.id),
+                status: 3,
+                $expr: { 
+                  $and: [
+                    {
+                      "$eq": [
+                        {
+                          "$month": "$checkout"
+                        },
+                        quarters[j][i]
+                      ]
+                    },
+                    {
+                      "$eq": [
+                        {
+                          "$year": "$checkout"
+                        },
+                        year
+                      ]
+                    }
+                  ]
+                }
+              } 
+            },
+            {
+              $group:
+                {
+                  _id: { month: { $month: "$checkout"}, year: { $year: "$checkout" } },
+                  total: { $sum: "$total" }
+                }
+            }
+          ])
+          if (moneyBooking.length != 0) {
+            moneyList[j] += moneyBooking[0].total
+            totalMoney += moneyBooking[0].total
+            if (moneyBooking[0].total > max ){
+              max = moneyBooking[0].total
+            }
+          }
+        }
+      }
+      
+      res.status(200).send({moneyList, totalMoney, max})
+    }
+  } else {
+    var totalMoney = 0;
+    var countBooking = 0
+    const moneyBooking = await Book.aggregate([
+      { $match: {
+          homestayId: ObjectId(req.params.id),
+          status: 3
+        } 
+      },
+      {
+        $group:
+          {
+            _id: { id: "$homestayId" },
+            total: { $sum: "$total" }
+          }
+        }
+      ]
+    )
+    if (moneyBooking.length != 0) {
+      totalMoney = moneyBooking[0].total
+    }
+    const numberBooking = await Book.aggregate([
+      { $match: {
+          homestayId: ObjectId(req.params.id),
+          status: 3
+        } 
+      },
+      {
+        $count: "booking"
+      }
+    ])
+    if(numberBooking.length != 0) {
+      countBooking = numberBooking[0].booking
+    }
+    res.status(200).send({totalMoney, countBooking})
+
+  }
+
+};
+
 
 exports.deleteMany = (req, res, next) => {};
