@@ -72,6 +72,25 @@ router.post(
   auth.requireAuth,
   homestayController.postUpdate
 );
+/**
+ * @swagger
+ * /homestays/{homestayId}/visit:
+ *   get:
+ *     description: get count visit of homestay
+ *     parameters:
+ *       - in: path
+ *         name: homestayId
+ *         schema:
+ *              type: string
+ *         required: true
+ *         description: homestay id
+ *     responses:
+ *       200:
+ *         description: get successfully
+ *       404:
+ *         description: not found
+ */
+router.get('/:homestayId/visit', homestayController.getCountVisit);
 
 router.delete('/:homestayId', auth.requireAuth, homestayController.deleteOne);
 

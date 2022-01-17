@@ -3,6 +3,7 @@ const City = require('../models/city');
 const Service = require('../models/service');
 const Room = require('../models/room');
 const BookItem = require('../models/book_item');
+const Book = require('../models/book');
 const { count } = require('../models/homestay');
 
 exports.getAll = async (req, res, next) => {
@@ -145,6 +146,47 @@ exports.deleteOne = (req, res, next) => {
       res.sendStatus(200);
     })
     .catch((err) => console.log(err));
+};
+exports.getCountVisit = (req, res, next) => {
+  try {
+    Book.aggregate(
+      [
+        // { $match: { status: { $in: [1, 2, 3] } } },
+        {
+          $lookup: {
+            from: 'Homestay',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'Homestay',
+          },
+        },
+        {
+          $match: {
+            'Homestay.id': req.params.homestayId,
+            status: { $in: [1, 2, 3] },
+          },
+        },
+        {
+          $group: {
+            _id: '',
+            guests: { $sum: '$guests' },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            guests: '$guests',
+          },
+        },
+      ],
+      function (err, result) {
+        console.log(111, result);
+        res.send(result);
+      }
+    );
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 exports.deleteMany = (req, res, next) => {};

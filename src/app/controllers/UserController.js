@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const Role = require('../models/role');
-const BookItem = require('../models/book_item');
+const Book = require('../models/book');
 const { createUserValidator } = require('../validation/userAuth');
 const mongoose = require('../../util/mongoose');
 
@@ -87,18 +87,26 @@ class UserController {
     );
   }
   async countVisit(req, res, next) {
-    console.log(111111);
     try {
-      BookItem.aggregate(
+      Book.aggregate(
         [
           { $match: { status: { $in: [1, 2, 3] } } },
           {
-            $group: { _id: '$_id', total: { $sum: '$persons' } },
+            $group: {
+              _id: '',
+              guests: { $sum: '$guests' },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              guests: '$guests',
+            },
           },
         ],
         function (err, result) {
           console.log(111, result);
-          res.json(result);
+          res.json(result[0].guests);
         }
       );
     } catch (e) {

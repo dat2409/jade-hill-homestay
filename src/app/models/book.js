@@ -1,24 +1,25 @@
 const mongoose = require('mongoose');
 
-const Schema = new mongoose.Schema({
+const Schema = new mongoose.Schema(
+  {
     user_info: {
-        name: {
-            type: String
-        },
-        phone: {
-            type: String
-        },
-        email: {
-            type: String
-        },
-        sex: {
-            type: String,
-            enum: ['Male', 'Female', 'Other']
-        }
+      name: {
+        type: String,
+      },
+      phone: {
+        type: String,
+      },
+      email: {
+        type: String,
+      },
+      sex: {
+        type: String,
+        enum: ['Male', 'Female', 'Other'],
+      },
     },
     guests: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     book_from: {
       type: Date,
@@ -36,39 +37,51 @@ const Schema = new mongoose.Schema({
       type: Date,
       required: true,
     },
-    books: [{
+    books: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'BookItem'
-    }],
+        ref: 'BookItem',
+      },
+    ],
+    homestay: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Homestay',
+      },
+    ],
     is_deposited: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     is_paid: {
       type: Boolean,
       default: false,
-  },
-    services: [{
-      service: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Service'
+    },
+    services: [
+      {
+        service: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Service',
+        },
+        volume: {
+          type: Number,
+          require: true,
+        },
       },
-      volume: {
-        type: Number,
-        require: true
-      }
-    }],
+    ],
     total: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     status: {
       type: Number,
       enum: [0, 1, 2, 3], //0-unpaid 1-paid 2-checkedin 3-checkedout
-      default: 0
+      default: 0,
     },
-},{timestamps: true});
+  },
+  { timestamps: true }
+);
 
-const  Book = mongoose.model('Book', Schema);
+const Book = mongoose.model('Book', Schema);
 
 module.exports = Book;
