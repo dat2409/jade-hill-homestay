@@ -5,6 +5,8 @@ const Room = require('../models/room');
 const BookItem = require('../models/book_item');
 const Book = require('../models/book');
 const { count } = require('../models/homestay');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -152,17 +154,10 @@ exports.getCountVisit = (req, res, next) => {
     Book.aggregate(
       [
         // { $match: { status: { $in: [1, 2, 3] } } },
-        {
-          $lookup: {
-            from: 'Homestay',
-            localField: '_id',
-            foreignField: '_id',
-            as: 'Homestay',
-          },
-        },
+
         {
           $match: {
-            'Homestay.id': req.params.homestayId,
+            homestayId: req.params.homestayId,
             status: { $in: [1, 2, 3] },
           },
         },
@@ -186,6 +181,145 @@ exports.getCountVisit = (req, res, next) => {
     );
   } catch (e) {
     console.log(e);
+  }
+};
+
+exports.getOneStatistic = async (req, res, next) => {
+  if (req.query.year) {
+    var year = parseInt(req.query.year);
+    if (req.query.feature == 'money') {
+      filterBy = '$total';
+    } else if (req.query.feature == 'guests') {
+      filterBy = '$guests';
+    }
+    //month
+    if (req.query.type == 'month') {
+      var list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      var total = 0;
+      var max = 0;
+      const moneyBooking = await Book.aggregate([
+        {
+          $match: {
+            homestayId: ObjectId(req.params.id),
+            status: 3,
+            $expr: { $eq: [{ $year: '$checkout' }, year] },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              month: { $month: '$checkout' },
+              year: { $year: '$checkout' },
+            },
+            total: { $sum: filterBy },
+          },
+        },
+      ]);
+      for (var i = 0; i < moneyBooking.length; i++) {
+        list[moneyBooking[i]._id.month - 1] = moneyBooking[i].total;
+        total += moneyBooking[i].total;
+        if (moneyBooking[i].total > max) {
+          max = moneyBooking[i].total;
+        }
+      }
+      res.status(200).send({ list, total, max });
+    } else if (req.query.type == 'quarter') {
+      //quarter
+      const quarters = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+        [10, 11, 12],
+      ];
+      var list = [0, 0, 0, 0];
+      var total = 0;
+      var max = 0;
+      for (var j = 0; j < 4; j++) {
+        for (var i = 0; i <= 3; i++) {
+          var moneyBooking = await Book.aggregate([
+            {
+              $match: {
+                homestayId: ObjectId(req.params.id),
+                status: 3,
+                $expr: {
+                  $and: [
+                    {
+                      $eq: [
+                        {
+                          $month: '$checkout',
+                        },
+                        quarters[j][i],
+                      ],
+                    },
+                    {
+                      $eq: [
+                        {
+                          $year: '$checkout',
+                        },
+                        year,
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  month: { $month: '$checkout' },
+                  year: { $year: '$checkout' },
+                },
+                total: { $sum: filterBy },
+              },
+            },
+          ]);
+          if (moneyBooking.length != 0) {
+            list[j] += moneyBooking[0].total;
+            total += moneyBooking[0].total;
+          }
+        }
+        if (list[j] > max) {
+          max = list[j];
+        }
+      }
+
+      res.status(200).send({ list, total, max });
+    }
+  } else {
+    var totalMoney = 0;
+    var countBooking = 0;
+    const moneyBooking = await Book.aggregate([
+      {
+        $match: {
+          homestayId: ObjectId(req.params.id),
+          status: 3,
+        },
+      },
+      {
+        $group: {
+          _id: { id: '$homestayId' },
+          total: { $sum: '$total' },
+        },
+      },
+    ]);
+    if (moneyBooking.length != 0) {
+      totalMoney = moneyBooking[0].total;
+    }
+    const numberBooking = await Book.aggregate([
+      {
+        $match: {
+          homestayId: ObjectId(req.params.id),
+          status: 3,
+        },
+      },
+      {
+        $count: 'booking',
+      },
+    ]);
+    if (numberBooking.length != 0) {
+      countBooking = numberBooking[0].booking;
+    }
+    res.status(200).send({ totalMoney, countBooking });
   }
 };
 

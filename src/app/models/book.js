@@ -46,9 +46,13 @@ const Schema = new mongoose.Schema(
     homestay: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Homestay',
+        ref: 'BookItem',
       },
     ],
+    homestayId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Homestay',
+    },
     is_deposited: {
       type: Boolean,
       default: false,

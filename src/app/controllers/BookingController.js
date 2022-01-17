@@ -31,7 +31,6 @@ class BookingController {
       total: total,
       books: bookArr,
     });
-    await book.save();
     await book
       .populate({
         path: 'books',
@@ -43,6 +42,8 @@ class BookingController {
         },
       })
       .execPopulate();
+    book.homestayId = book.books[0].room_type.homestay._id;
+    await book.save();
     var transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
@@ -73,7 +74,7 @@ class BookingController {
             <li>Tổng tiền phải đặt cọc: ${book.total} (đồng)</li>
           </h3>
         </ul>
-        <h2>Đơn đặt phòng của bạn đã được ghi nhận. Vui lòng thanh toán tiền phòng theo thông tin sau đây</h2>
+        <h2>Vui lòng thanh toán tiền phòng theo thông tin sau đây</h2>
           <ul>
             <h3>
               <li>Chủ tài khoản: THAI DOAN DAT</li>
@@ -87,7 +88,7 @@ class BookingController {
     `;
 
     var mainOptions = {
-      from: 'SetSail Tour Travel',
+      from: 'JadeHill Homestay',
       to: book.user_info.email,
       subject: 'Xác nhận thông tin đặt homestay',
       html: content,

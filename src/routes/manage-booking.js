@@ -6,6 +6,8 @@ const ManageBookingController = require('../app/controllers/ManageBookingControl
 
 const router = express.Router();
 
+router.get('/search/:phone', ManageBookingController.searchBooking);
+
 router.get('/', ManageBookingController.getAll);
 
 router.put('/:bookId/checkin', ManageBookingController.checkin);

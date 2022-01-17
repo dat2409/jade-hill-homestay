@@ -82,7 +82,7 @@ class ManageBookingController {
     `;
 
     var mainOptions = {
-      from: 'SetSail Tour Travel',
+      from: 'JadeHill Homestay',
       to: book.user_info.email,
       subject: 'Thông báo đặt cọc thành công',
       html: content
@@ -156,6 +156,13 @@ class ManageBookingController {
       services: data.services
     })
       .then(() => res.send('Add services to bill successfully!'));
+  }
+
+  searchBooking(req, res, next) {
+    Book.find({
+      'user_info.phone': req.params.phone
+    })
+      .then(bookings => res.send(bookings));
   }
 }
 module.exports = new ManageBookingController();
