@@ -50,8 +50,7 @@ const Schema = new mongoose.Schema(
       },
     ],
     homestayId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Homestay',
+      type: String,
     },
     is_deposited: {
       type: Boolean,
