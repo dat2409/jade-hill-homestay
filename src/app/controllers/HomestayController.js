@@ -149,137 +149,178 @@ exports.deleteOne = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
+exports.getCountVisit = (req, res, next) => {
+  try {
+    Book.aggregate(
+      [
+        // { $match: { status: { $in: [1, 2, 3] } } },
+
+        {
+          $match: {
+            homestayId: req.params.homestayId,
+            status: { $in: [1, 2, 3] },
+          },
+        },
+        {
+          $group: {
+            _id: '',
+            guests: { $sum: '$guests' },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            guests: '$guests',
+          },
+        },
+      ],
+      function (err, result) {
+        console.log(111, result);
+        res.send(result);
+      }
+    );
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 exports.getOneStatistic = async (req, res, next) => {
   if (req.query.year) {
-    var year = parseInt(req.query.year)
-    if (req.query.feature == "money" ){
-      filterBy = "$total"
-    } else if (req.query.feature == "guests") {
-      filterBy = "$guests"
+    var year = parseInt(req.query.year);
+    if (req.query.feature == 'money') {
+      filterBy = '$total';
+    } else if (req.query.feature == 'guests') {
+      filterBy = '$guests';
     }
     //month
-    if (req.query.type == "month") {
-      var list = [0,0,0,0,0,0,0,0,0,0,0,0];
+    if (req.query.type == 'month') {
+      var list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       var total = 0;
-      var max = 0
+      var max = 0;
       const moneyBooking = await Book.aggregate([
-        { $match: {
+        {
+          $match: {
             homestayId: ObjectId(req.params.id),
             status: 3,
-            $expr: { "$eq": [{ "$year": "$checkout" }, year] }
-          } 
+            $expr: { $eq: [{ $year: '$checkout' }, year] },
+          },
         },
         {
-          $group:
-            {
-              _id: { month: { $month: "$checkout"}, year: { $year: "$checkout" } },
-              total: { $sum: filterBy }
-            }
-          }
-        ]
-      )
-      for (var i = 0; i < moneyBooking.length; i++){
-        list[moneyBooking[i]._id.month - 1] = moneyBooking[i].total 
-        total += moneyBooking[i].total 
-        if (moneyBooking[i].total > max ){
-          max = moneyBooking[i].total
+          $group: {
+            _id: {
+              month: { $month: '$checkout' },
+              year: { $year: '$checkout' },
+            },
+            total: { $sum: filterBy },
+          },
+        },
+      ]);
+      for (var i = 0; i < moneyBooking.length; i++) {
+        list[moneyBooking[i]._id.month - 1] = moneyBooking[i].total;
+        total += moneyBooking[i].total;
+        if (moneyBooking[i].total > max) {
+          max = moneyBooking[i].total;
         }
       }
-      res.status(200).send({list, total, max})
-    } else if (req.query.type == "quarter"){
+      res.status(200).send({ list, total, max });
+    } else if (req.query.type == 'quarter') {
       //quarter
-      const quarters = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]]
-      var list = [0,0,0,0];
+      const quarters = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+        [10, 11, 12],
+      ];
+      var list = [0, 0, 0, 0];
       var total = 0;
-      var max = 0
+      var max = 0;
       for (var j = 0; j < 4; j++) {
-        for( var i = 0; i <= 3; i++) {
+        for (var i = 0; i <= 3; i++) {
           var moneyBooking = await Book.aggregate([
-            { $match: {
+            {
+              $match: {
                 homestayId: ObjectId(req.params.id),
                 status: 3,
-                $expr: { 
+                $expr: {
                   $and: [
                     {
-                      "$eq": [
+                      $eq: [
                         {
-                          "$month": "$checkout"
+                          $month: '$checkout',
                         },
-                        quarters[j][i]
-                      ]
+                        quarters[j][i],
+                      ],
                     },
                     {
-                      "$eq": [
+                      $eq: [
                         {
-                          "$year": "$checkout"
+                          $year: '$checkout',
                         },
-                        year
-                      ]
-                    }
-                  ]
-                }
-              } 
+                        year,
+                      ],
+                    },
+                  ],
+                },
+              },
             },
             {
-              $group:
-                {
-                  _id: { month: { $month: "$checkout"}, year: { $year: "$checkout" } },
-                  total: { $sum: filterBy }
-                }
-            }
-          ])
+              $group: {
+                _id: {
+                  month: { $month: '$checkout' },
+                  year: { $year: '$checkout' },
+                },
+                total: { $sum: filterBy },
+              },
+            },
+          ]);
           if (moneyBooking.length != 0) {
-            list[j] += moneyBooking[0].total
-            total += moneyBooking[0].total
+            list[j] += moneyBooking[0].total;
+            total += moneyBooking[0].total;
           }
         }
-        if (list[j] > max ){
-          max = list[j]
+        if (list[j] > max) {
+          max = list[j];
         }
       }
-      
-      res.status(200).send({list, total, max})
+
+      res.status(200).send({ list, total, max });
     }
   } else {
     var totalMoney = 0;
-    var countBooking = 0
+    var countBooking = 0;
     const moneyBooking = await Book.aggregate([
-      { $match: {
+      {
+        $match: {
           homestayId: ObjectId(req.params.id),
-          status: 3
-        } 
+          status: 3,
+        },
       },
       {
-        $group:
-          {
-            _id: { id: "$homestayId" },
-            total: { $sum: "$total" }
-          }
-        }
-      ]
-    )
+        $group: {
+          _id: { id: '$homestayId' },
+          total: { $sum: '$total' },
+        },
+      },
+    ]);
     if (moneyBooking.length != 0) {
-      totalMoney = moneyBooking[0].total
+      totalMoney = moneyBooking[0].total;
     }
     const numberBooking = await Book.aggregate([
-      { $match: {
+      {
+        $match: {
           homestayId: ObjectId(req.params.id),
-          status: 3
-        } 
+          status: 3,
+        },
       },
       {
-        $count: "booking"
-      }
-    ])
-    if(numberBooking.length != 0) {
-      countBooking = numberBooking[0].booking
+        $count: 'booking',
+      },
+    ]);
+    if (numberBooking.length != 0) {
+      countBooking = numberBooking[0].booking;
     }
-    res.status(200).send({totalMoney, countBooking})
-
+    res.status(200).send({ totalMoney, countBooking });
   }
-
 };
-
 
 exports.deleteMany = (req, res, next) => {};
