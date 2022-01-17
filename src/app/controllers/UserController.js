@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const Role = require('../models/role');
-const Book = require('../models/book');
 const { createUserValidator } = require('../validation/userAuth');
 const mongoose = require('../../util/mongoose');
 
@@ -78,6 +77,22 @@ class UserController {
     User.updateOne({ _id: req.params.id }, req.body).then(() =>
       res.send('Update successfully!')
     );
+  }
+
+  async updatePassword(req, res, next) {
+    const salt = await bcrypt.genSalt(10);
+    const hashNewPassword = await bcrypt.hash(req.body.password, salt);
+
+    User.updateOne(
+      { _id: req.params.id },
+      {
+        password: hashNewPassword,
+      }
+    ).then(() => res.send('Change password successfully!'));
+  }
+
+  profile(req, res, next) {
+    res.send(req.user);
   }
 
   //DELETE /users/:id

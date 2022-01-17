@@ -32,5 +32,5 @@ router.get('/', userController.index);
 
 router.patch('/:id', userController.update);
 router.delete('/:id', userController.destroy);
-
+router.patch('/change-password/:id', userController.updatePassword);
 module.exports = router;
