@@ -10,7 +10,7 @@ const db = require('./config/db');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const CookieParser = require('cookie-parser');
-var cors = require('cors')
+var cors = require('cors');
 require('dotenv').config({ path: 'src/.env' });
 
 // Connect to db
@@ -37,9 +37,9 @@ app.use(
 app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(CookieParser());
-app.use(cors())
+app.use(cors());
 
-app.options('/login', cors())
+app.options('/login', cors());
 
 const options = {
   definition: {
@@ -69,3 +69,5 @@ app.use(
 route(app);
 
 app.listen(port);
+
+

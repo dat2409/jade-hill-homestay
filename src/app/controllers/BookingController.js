@@ -14,13 +14,13 @@ class BookingController {
         checkin: checkin,
         checkout: checkout,
         volume: books[i].volume,
-        status: 0
+        status: 0,
       });
-      await bookItem.save()
-      console.log('item', bookItem)
-      bookArr.push(bookItem._id)
+      await bookItem.save();
+      console.log('item', bookItem);
+      bookArr.push(bookItem._id);
     }
-    console.log(bookArr)
+    console.log(bookArr);
     const book = new Book({
       user_info: user_info,
       guests: guests,
@@ -29,28 +29,30 @@ class BookingController {
       checkin: checkin,
       checkout: checkout,
       total: total,
-      books: bookArr
-    })
-    await book.populate({
-      path: 'books',
-      populate: {
-        path: 'room_type',
+      books: bookArr,
+    });
+    await book
+      .populate({
+        path: 'books',
         populate: {
-          path: 'homestay'
-        }
-      }
-    }).execPopulate();
+          path: 'room_type',
+          populate: {
+            path: 'homestay',
+          },
+        },
+      })
+      .execPopulate();
     book.homestayId = book.books[0].room_type.homestay._id;
     await book.save();
     var transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user: "thaidat2409@gmail.com",
-        pass: "dattrong1@"
+        user: 'thaidat2409@gmail.com',
+        pass: 'dattrong1@',
       },
       tls: {
-        rejectUnauthorized: false
-      }
+        rejectUnauthorized: false,
+      },
     });
 
     var content = '';
@@ -89,19 +91,18 @@ class BookingController {
       from: 'JadeHill Homestay',
       to: book.user_info.email,
       subject: 'Xác nhận thông tin đặt homestay',
-      html: content
-    }
+      html: content,
+    };
 
     transporter.sendMail(mainOptions, function (err, info) {
       if (err) {
         console.log(err);
-      }
-      else {
+      } else {
         console.log('Message sent: ' + info.response);
         res.send('ok');
       }
-    })
-    res.json(book)
+    });
+    res.json(book);
   }
 
   // async create(req, res, next) {
