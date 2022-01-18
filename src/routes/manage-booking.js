@@ -6,6 +6,8 @@ const ManageBookingController = require('../app/controllers/ManageBookingControl
 
 const router = express.Router();
 
+router.get('/services-by-homestay-id/:homestayId', ManageBookingController.servicesByHomestay);
+
 router.get('/search/:phone', ManageBookingController.searchBooking);
 
 router.get('/', ManageBookingController.getAll);
