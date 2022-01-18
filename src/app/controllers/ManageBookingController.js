@@ -3,6 +3,7 @@ const mongoose = require('../../util/mongoose');
 const BookItem = require('../models/book_item');
 const User = require('../models/user');
 const nodemailer = require('nodemailer');
+const Service = require('../models/service');
 
 class ManageBookingController {
   async getAll(req, res, next) {
@@ -17,16 +18,27 @@ class ManageBookingController {
 
   async getItem(req, res, next) {
     const book = await Book.findOne({ _id: req.params.bookId })
-    await book.populate({
+    var result = await book.populate({
       path: 'books',
+      select: 'volume',
       populate: {
         path: 'room_type',
+        select: 'name',
         populate: {
-          path: 'homestay'
+          path: 'homestay', select: '_id name'
         }
       }
     }).execPopulate();
-    res.json(mongoose.mongooseToObject(book))
+
+    res.json(mongoose.mongooseToObject(result))
+  }
+
+  async servicesByHomestay(req, res, next) {
+    const services = await Service.find({
+      homestay: req.params.homestayId
+    })
+
+    res.json(mongoose.multipleMongooseToObject(services))
   }
 
   async deposit(req, res, next) {
