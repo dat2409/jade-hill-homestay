@@ -1,10 +1,23 @@
 const path = require('path');
+const multer = require('multer')
 
 const express = require('express');
 
 const roomController = require('../app/controllers/RoomController');
 
 const router = express.Router();
+
+const upload = multer({
+  limits:{
+      fileSize: 1000000
+  },
+  fileFilter(req, file,cb) {
+      if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+          return cb(new Error('Please update an image'))
+      }
+      cb(undefined, true)
+  }
+})
 
 /**
  * @swagger
@@ -138,7 +151,7 @@ const router = express.Router();
  *       409:
  *         description: Conflig
  */
-router.post('/', roomController.createRoom);
+router.post('/', upload.single('image'), roomController.createRoom);
 
 /**
  * @swagger
@@ -212,5 +225,6 @@ router.delete('/:id', roomController.deleteRoomType);
  *         description: not found
  */
 router.get('/:id', roomController.getRoomType);
+router.get('/:id/image', roomController.getImage);
 
 module.exports = router;

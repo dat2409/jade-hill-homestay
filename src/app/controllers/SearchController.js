@@ -1,6 +1,7 @@
 const Service = require('../models/service');
 const mongoose = require('../../util/mongoose');
 const Homestay = require('../models/homestay');
+const Room = require('../models/room');
 const City = require('../models/city');
 
 class SearchController {
@@ -33,6 +34,22 @@ class SearchController {
     const homestay = await Homestay.findById(homestayId);
     const services = await Service.find({ homestay: homestayId });
     res.send({ homestay: homestay, services: services });
+  };
+
+  async getRoomImage(req, res, next) {
+    try {
+      const room = await Room.findById(req.params.id)
+      if (!room || !room.image) {
+          throw new Error()
+      }else {
+          res.set('Content-Type', 'image/png')
+          res.send(room.image)
+      }
+
+    } catch(e) {
+        res.status(404).send()
+        console.log(e)
+    }
   };
 }
 

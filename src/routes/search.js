@@ -10,5 +10,6 @@ router.get('/cities', searchController.getAllCities);
 router.get('/', searchController.search);
 //get homestay info and service
 router.get('/homestays/:id', searchController.getOneHomestay);
+router.get('/roomTypes/:id/image', searchController.getRoomImage);
 
 module.exports = router;

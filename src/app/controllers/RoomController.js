@@ -1,9 +1,11 @@
 const Room = require('../models/room');
 const Homestay = require('../models/homestay');
 const User = require('../models/user');
+const sharp = require('sharp')
 
 class RoomController {
   async createRoom(req, res, next) {
+    console.log(req.body)
     let h;
     console.log(1);
     try {
@@ -34,6 +36,10 @@ class RoomController {
     req.body.homestay = h;
     delete req.body.homestayId;
     const room = new Room(req.body);
+    if (req.file) {
+      const buffer = await sharp(req.file.buffer).resize({width:550, height:500}).png().toBuffer()
+      room.image = buffer
+    }
     await room.save();
     res.send(room);
   }
@@ -91,6 +97,23 @@ class RoomController {
       if (result) res.send(result);
       else res.status(404).send('not found');
     });
+  }
+
+  async getImage (req, res, next) {
+    try {
+      const room = await Room.findById(req.params.id)
+      if (!room || !room.image) {
+          throw new Error()
+      }else {
+          res.set('Content-Type', 'image/png')
+          res.send(room.image)
+      }
+
+    } catch(e) {
+        res.status(404).send()
+        console.log(e)
+    }
+
   }
 }
 module.exports = new RoomController();
