@@ -75,7 +75,9 @@ class RoomController {
       }
 
       await Room.findByIdAndUpdate({ _id: r._id }, req.body, { new: true });
-      let rooms = await Room.findOne({ _id: r._id });
+      let rooms = await Room.findOne({ _id: r._id })
+        .populate({ path: 'homestay', select: '_id' })
+        .exec();
       res.send(rooms);
     } else res.status(404).send('not found');
   }
