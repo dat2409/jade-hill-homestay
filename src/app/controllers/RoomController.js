@@ -35,6 +35,8 @@ class RoomController {
     req.body.creator = u;
     req.body.homestay = h;
     delete req.body.homestayId;
+    const room_nums_handle = req.body.room_nums.split(",").map(Number);
+    req.body.room_nums = room_nums_handle
     const room = new Room(req.body);
     if (req.file) {
       const buffer = await sharp(req.file.buffer).resize({width:550, height:500}).png().toBuffer()
