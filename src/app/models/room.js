@@ -55,14 +55,6 @@ const Schema = new mongoose.Schema(
   }
 );
 
-Schema.methods.toJSON = function() {
-  const room = this
-  const roomObject = room.toObject()
-
-  delete roomObject.image
-  return roomObject
-}
-
 const Room = mongoose.model('Room', Schema);
 
 module.exports = Room;
