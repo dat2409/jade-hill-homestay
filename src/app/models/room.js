@@ -24,7 +24,7 @@ const Schema = new mongoose.Schema(
     },
     room_nums: {
       type: [Number],
-      required: true,
+      // required: true,
     },
     total_rooms: {
       type: Number,
@@ -46,6 +46,9 @@ const Schema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    image: {
+      type: Buffer
+    }
   },
   {
     timestamps: true,
