@@ -12,22 +12,23 @@ class UserController {
 
   //POST /users/store
   async store(req, res, next) {
-    const { error } = createUserValidator(req.body);
+    // const { error } = createUserValidator(req.body);
 
-    if (error) return res.status(422).send(error.details[0].message);
+    // if (error) return res.status(422).send(error.details[0].message);
 
-    const checkEmailExist = await User.findOne({ email: req.body.email });
+    // const checkEmailExist = await User.findOne({ email: req.body.email });
 
-    if (checkEmailExist) return res.status(422).send('Email already exists!');
+    // if (checkEmailExist) return res.status(422).send('Email already exists!');
 
     /**
       genSalt() quy định số vòng lặp để tạo ra chuỗi mã hóa, có thể chỉ định từ 4-30 vòng
       số vòng lặp càng cao => thời gian tạo chuỗi mã hóa càng lâu
       => độ an toàn càng lớn
      */
+    console.log(req.body)
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(req.body.password, salt);
-
+    console.log(req.user)
     const user = new User({
       email: req.body.email,
       password: hashPassword,
