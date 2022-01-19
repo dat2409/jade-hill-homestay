@@ -18,7 +18,7 @@ function route(app) {
   app.use('/services', auth.requireAuth, serviceRouter);
   app.use('/', staticPagesRouter);
   app.use('/roomTypes', auth.requireAuth, roomRouter);
-  app.use('/users', userRouter);
+  app.use('/users', auth.requireAuth, userRouter);
   app.use('/search', searchRouter);
   app.use('/', staticPagesRouter);
 }
