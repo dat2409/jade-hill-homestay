@@ -5,6 +5,7 @@ const userAuth = require('../app/middleware/auth');
 const router = express.Router();
 
 router.get('/create', userController.create);
+router.get('/profile', userController.profile);
 /**
  * @swagger
  * /users/visit:
