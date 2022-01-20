@@ -288,6 +288,7 @@ exports.getOneStatistic = async (req, res, next) => {
   } else {
     var totalMoney = 0;
     var countBooking = 0;
+    var totalGuests = 0;
     const moneyBooking = await Book.aggregate([
       {
         $match: {
@@ -299,11 +300,13 @@ exports.getOneStatistic = async (req, res, next) => {
         $group: {
           _id: { id: '$homestayId' },
           total: { $sum: '$total' },
+          totalGuests: {$sum: '$guests'}
         },
       },
     ]);
     if (moneyBooking.length != 0) {
       totalMoney = moneyBooking[0].total;
+      totalGuests = moneyBooking[0].totalGuests
     }
     const numberBooking = await Book.aggregate([
       {
@@ -319,7 +322,7 @@ exports.getOneStatistic = async (req, res, next) => {
     if (numberBooking.length != 0) {
       countBooking = numberBooking[0].booking;
     }
-    res.status(200).send({ totalMoney, countBooking });
+    res.status(200).send({ totalMoney, countBooking, totalGuests });
   }
 };
 
